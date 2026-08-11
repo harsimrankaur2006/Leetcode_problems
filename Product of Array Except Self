@@ -1,0 +1,47 @@
+Problem Statement
+Given an integer array nums, return an array answer such that answer[i] is equal to the product of all the elements of nums except nums[i].
+The product of any prefix or suffix of nums is guaranteed to fit in a 32-bit integer.
+You must write an algorithm that runs in O(n) time and without using the division operation.
+Example 1:
+Input: nums = [1,2,3,4]
+Output: [24,12,8,6]
+Example 2:
+Input: nums = [-1,1,0,-3,3]
+Output: [0,0,9,0,0]
+
+1.Intuition
+The product of all elements except nums[i] can be broken down into two parts: the product of all elements to the left of index i (prefix product) and the product of all elements to the right of index i (suffix product). By computing both without using division, we can construct the result in O(n) time.
+
+2. Approach
+   a) Initialize a result vector answer of size n filled with 1s.
+   b) Left/Prefix Pass: Iterate from left to right (0 to n-1). Maintain a running variable prefix that tracks the product of all elements seen so far. At each step, assign answer[i] = prefix, then multiply prefix by nums[i].
+   c) Right/Suffix Pass: Iterate backward from right to left (n-1 down to 0). Maintain a running variable suffix that tracks the product of all elements to the right. Multiply answer[i] by suffix, then multiply suffix by nums[i].
+   d) Return answer, which now holds prefix_product * suffix_product for each index.
+Complexity
+  Time Complexity: O(n) since we iterate through the array twice in separate linear passes.
+  Space Complexity: O(1) extra auxiliary space, as the output vector answer does not count toward extra space complexity according to problem conventions.
+
+3.Code
+class Solution {
+public:
+    std::vector<int> productExceptSelf(std::vector<int>& nums) {
+        int n = nums.size();
+        std::vector<int> answer(n, 1);
+
+        // Step 1: Calculate prefix products
+        int prefix = 1;
+        for (int i = 0; i < n; i++) {
+            answer[i] = prefix;
+            prefix *= nums[i];
+        }
+
+        // Step 2: Calculate suffix products on the fly and combine
+        int suffix = 1;
+        for (int i = n - 1; i >= 0; i--) {
+            answer[i] *= suffix;
+            suffix *= nums[i];
+        }
+
+        return answer;
+    }
+};

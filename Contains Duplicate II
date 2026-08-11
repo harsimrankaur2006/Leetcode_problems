@@ -1,0 +1,49 @@
+Problem Statement
+Given an integer array nums and an integer k, return true if there are two distinct indices i and j in the array such that nums[i] == nums[j] and abs(i - j) <= k.
+Example 1:
+Input: nums = [1,2,3,1], k = 3
+Output: true
+Example 2:
+Input: nums = [1,0,1,1], k = 1
+Output: true
+Example 3:
+Input: nums = [1,2,3,1,2,3], k = 2
+Output: false
+
+
+1.Intuition
+Unlike checking for any duplicate, here we need to ensure two duplicate values occur within a window of distance k (i.e., |i - j| <= k). By storing each element alongside its most recent index in a hash map, we can check in O(1) time whether a duplicate was seen recently enough to satisfy the distance condition.
+
+2. Approach
+   a)Initialize a hash map mp to store each unique number as a key and its latest array index as the value.
+   b)Iterate through the array nums using index i:
+       Check if nums[i] is already present in mp.
+       If it exists and the difference between the current index i and its last seen index mp[nums[i]] is <= k, return true.
+       Update the map with the current index: mp[nums[i]] = i (this ensures we always store the most recent position to maximize the chance of finding a pair within distance k).
+3. If the loop completes without finding a valid pair, return false.
+Complexity
+  Time Complexity: O(n) where n is the length of nums, as each hash map lookup and insertion takes O(1) on average.
+  Space Complexity: O(n) in the worst case to store up to n unique elements and their indices in the hash map. (Alternatively, using a sliding window of size k with unordered_set can reduce space complexity to O(min(n, k))).
+
+3.Code
+#include <vector>
+#include <unordered_map>
+using namespace std;
+
+class Solution {
+public:
+    bool containsNearbyDuplicate(vector<int>& nums, int k) {
+        unordered_map<int, int> mp;
+
+        for (int i = 0; i < nums.size(); i++) {
+            if (mp.count(nums[i])) {
+                if (i - mp[nums[i]] <= k) {
+                    return true;
+                }
+            }
+            mp[nums[i]] = i;
+        }
+
+        return false;
+    }
+};

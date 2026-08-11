@@ -20,7 +20,15 @@ Output: true
 To check if an array contains any duplicates, we need a way to remember the numbers we have already encountered as we iterate through the list. A hash set is ideal for this because it allows instant (O(1) on average) lookups and insertions, making it efficient to detect if a number has appeared before.
 
 2. Approach
-Initialize an empty hash set (e.g., unordered_set in C++) to store numbers as we iterate through the array.Traverse through each element num in the array nums:Check if num is already in the set using the count() function.If it exists, a duplicate is found, so immediately return true.If it does not exist, insert num into the set and continue.If the loop finishes without finding any duplicates, return false.ComplexityTime Complexity: O(n) where n is the number of elements in the array, since hash set insertions and lookups take O(1) time on average.Space Complexity: O(n) to store up to $n$ unique elements in the set in the worst-case scenario.
+  a)Initialize an empty hash set (e.g., unordered_set in C++) to store numbers as we iterate through the array.
+  b)Traverse through each element num in the array nums:
+      Check if num is already in the set using the count() function.
+      If it exists, a duplicate is found, so immediately return true.
+      If it does not exist, insert num into the set and continue.
+  c) If the loop finishes without finding any duplicates, return false.
+ Complexity
+  Time Complexity: O(n) where n is the number of elements in the array, since hash set insertions and lookups take O(1) time on average.
+  Space Complexity: O(n) to store up to $n$ unique elements in the set in the worst-case scenario.
 
 3.Code
 #include <unordered_set>

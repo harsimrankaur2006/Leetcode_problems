@@ -1,0 +1,52 @@
+Problem Statement
+
+Given an integer array nums, find a that has the largest product, and return the product.
+The test cases are generated so that the answer will fit in a 32-bit integer.
+Note that the product of an array with a single element is the value of that element.
+Example 1:
+Input: nums = [2,3,-2,4]
+Output: 6
+Explanation: [2,3] has the largest product 6.
+Example 2:
+Input: nums = [-2,0,-1]
+Output: 0
+Explanation: The result cannot be 2, because [-2,-1] is not a subarray.
+
+
+1.Intuition
+Negative numbers reverse values when multiplied (a small negative becomes a large positive). Therefore, the maximum product ending at index i depends on both the maximum and minimum products ending at index i-1. By tracking both max_prod and min_prod dynamically, we can swap them whenever we encounter a negative number and find the global maximum product in one pass.
+
+2. Approach
+    a) Initialize: Set max_prod, min_prod, and best to nums[0].
+    b) Iterate: Loop from index 1 to n - 1:
+        If nums[i] < 0, swap max_prod and min_prod.
+        Update max_prod = max(nums[i], max_prod * nums[i]).
+        Update min_prod = min(nums[i], min_prod * nums[i]).
+        Update best = max(best, max_prod).
+    c) Return: Return best.
+  Complexity
+    Time Complexity: O(n) — Single linear pass.
+    Space Complexity: O(1) — Constant extra space.
+
+3.Code
+class Solution {
+public:
+    int maxProduct(vector<int>& nums) {
+        int max_prod = nums[0];
+        int min_prod = nums[0];
+        int best = nums[0];
+
+        for (int i = 1; i < nums.size(); i++) {
+            if (nums[i] < 0) {
+                swap(max_prod, min_prod);
+            }
+
+            max_prod = max(nums[i], max_prod * nums[i]);
+            min_prod = min(nums[i], min_prod * nums[i]);
+
+            best = max(best, max_prod);
+        }
+
+        return best;
+    }
+};

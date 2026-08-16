@@ -1,0 +1,51 @@
+Problem Statement
+
+Given an array of integers nums which is sorted in ascending order, and an integer target, write a function to search target in nums. If target exists, then return its index. Otherwise, return -1.
+You must write an algorithm with O(log n) runtime complexity. 
+Example 1:
+Input: nums = [-1,0,3,5,9,12], target = 9
+Output: 4
+Explanation: 9 exists in nums and its index is 4
+Example 2:
+Input: nums = [-1,0,3,5,9,12], target = 2
+Output: -1
+Explanation: 2 does not exist in nums so return -1
+
+1.Intuition
+Binary search works on the principle of divide and conquer for sorted arrays. Since the array is sorted in ascending order, inspecting the middle element gives absolute information about which half of the array can contain the target:
+	Target matches middle: We immediately return the middle index.
+	Target is greater than middle: Because the array is sorted, the target cannot exist in the left half. We discard the left half and narrow our search to the right half.
+	Target is smaller than middle: The target cannot exist in the right half. We discard the right half and narrow our search to the left half.
+By halving the remaining search range at every step, we find the element in logarithmic time rather than scanning linearly.
+
+2. Approach
+a) Initialize: Set low = 0 (start of array) and high = nums.size() - 1 (end of array).
+b) Iterate: While low <= high (valid search space exists):
+	Calculate mid = low + (high - low) / 2 to prevent potential integer overflow compared to (low + high) / 2.
+	Check nums[mid]:
+	If nums[mid] == target, return mid.
+	If nums[mid] < target, move search to right half: low = mid + 1.
+	If nums[mid] > target, move search to left half: high = mid - 1.
+c) Return: If low exceeds high, the element is not in the array, so return -1.
+Complexity
+	Time Complexity: O(log⁡n ) — The search range is halved at each iteration.
+	Space Complexity: O(1) — Uses a constant amount of extra memory.
+
+3.Code
+class Solution {
+public:
+    int search(vector<int>& nums, int target) {
+        int low = 0;
+        int high = nums.size() - 1;
+        while (low <= high) {
+            int mid = low + (high - low) / 2;
+            if (nums[mid] == target) {
+                return mid;
+            } else if (nums[mid] < target) {
+                low = mid + 1;
+            } else {
+                high = mid - 1;
+            }  }
+        return -1;
+    } };
+

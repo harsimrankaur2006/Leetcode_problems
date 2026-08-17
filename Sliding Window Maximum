@@ -1,0 +1,60 @@
+Problem Statement
+
+You are given an array of integers nums, there is a sliding window of size k which is moving from the very left of the array to the very right. You can only see the k numbers in the window. Each time the sliding window moves right by one position.
+Return the max sliding window.
+ 
+Example 1:
+Input: nums = [1,3,-1,-3,5,3,6,7], k = 3
+Output: [3,3,5,5,6,7]
+Explanation: 
+Window position                Max
+---------------               -----
+[1  3  -1] -3  5  3  6  7       3
+ 1 [3  -1  -3] 5  3  6  7       3
+ 1  3 [-1  -3  5] 3  6  7       5
+ 1  3  -1 [-3  5  3] 6  7       5
+ 1  3  -1  -3 [5  3  6] 7       6
+ 1  3  -1  -3  5 [3  6  7]      7
+Example 2:
+Input: nums = [1], k = 1
+Output: [1]
+ 
+1.Intuition
+A naive approach would check all k elements in every window to find the maximum, taking O(n×k) time, which is too slow for large inputs.
+To optimize this, we need a data structure that maintains elements in the current window in decreasing order. We can use a Monotonic Deque (Double-ended Queue) to store indices of array elements:
+	Whenever a new element enters the window, any smaller elements currently in the deque can never be the maximum for this or any future window (since the new element is both larger and will stay in the window longer). So, we can safely remove them from the back of the deque.
+	The front of the deque will always store the index of the maximum element for the current window.
+	As the window slides right, we remove indices from the front of the deque if they fall outside the current window range.
+
+2. Approach
+Maintain a double-ended queue (deque<int> dq) to store indices of elements in non-increasing order of their corresponding values.
+Loop through the array from index i = 0 to n - 1:
+	Remove Out-of-Bound Indices: If the index at the front of the deque is ≤i-k, it is outside the current window, so pop it from the front (dq.pop_front()).
+	Maintain Monotonicity: While the deque is not empty and the current element nums[i] is strictly greater than nums[dq.back()], pop elements from the back (dq.pop_back()).
+	Add Current Index: Push the current index i to the back of the deque (dq.push_back(i)).
+	Record Maximum: Once the window reaches size k (i.e., when i >= k - 1), the maximum element for the window is at nums[dq.front()]. Append this value to the result array.
+Complexity Analysis
+	Time Complexity: O(n) — Each element index is pushed into and popped from the deque at most once across the entire loop.
+	Space Complexity: O(k) — The deque stores at most k indices at any given time for maintaining the sliding window.
+
+3.Code
+class Solution {
+public:
+    vector<int> maxSlidingWindow(vector<int>& nums, int k) {
+        vector<int> ans;
+        deque<int> dq; // Stores indices
+
+        for (int i = 0; i < nums.size(); i++) {
+            if (!dq.empty() && dq.front() == i - k) {
+                dq.pop_front();
+            }
+            while (!dq.empty() && nums[dq.back()] < nums[i]) {
+                dq.pop_back();
+            }
+            dq.push_back(i);
+            if (i >= k - 1) {
+                ans.push_back(nums[dq.front()]);
+            } }
+        return ans;
+    } };
+

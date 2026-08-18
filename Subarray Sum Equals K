@@ -1,0 +1,53 @@
+Problem Statement
+
+Given an array of integers nums and an integer k, return the total number of subarrays whose sum equals to k.
+A subarray is a contiguous non-empty sequence of elements within an array.
+ 
+Example 1:
+Input: nums = [1,1,1], k = 2
+Output: 2
+Example 2:
+Input: nums = [1,2,3], k = 3
+Output: 2
+ 
+1.Intuition
+Let S[i] be the prefix sum of the array from index 0 to i:
+S[i]=∑_(j=0)^i▒"nums"  [j]
+The sum of elements in a subarray starting at index j and ending at index i (j≤i) is given by:
+"Subarray Sum" (j,i)=S[i]-S[j-1]
+We want to find pairs (j,i) such that:
+S[i]-S[j-1]=k⟹S[j-1]=S[i]-k
+This means as we iterate through the array maintaining the current running sum (S[i]), we simply need to check how many times the prefix sum (S[i]-k) has appeared before. A hash map allows us to store and lookup prefix sum frequencies in O(1) constant time.
+
+2. Approach
+1. Initialize a Hash Map: Map stores prefix sums as key and their frequency of occurrence as value: map<prefix_sum, count>.
+2. Base Case: Initialize map[0] = 1. This accounts for subarrays starting at index 0 whose sum directly equals k (i.e., S[i]-k=0).
+3.  Iterate & Count:
+	Maintain a running prefix_sum.
+	For each element, add it to prefix_sum.
+	Check if (prefix_sum - k) exists in the hash map. If it does, add its count to the answer.
+	Increment the frequency of the current prefix_sum in the hash map.
+Complexity Analysis
+	Time Complexity: O(n) — We perform a single pass over the array of length n. Each hash map insertion and lookup takes O(1) average time complexity.
+	Space Complexity: O(n) — In the worst-case scenario (all prefix sums are distinct), the hash map will store up to n+1 elements.
+
+3.Code
+class Solution {
+public:
+    int subarraySum(std::vector<int>& nums, int k) {
+        std::unordered_map<int, int> prefixSumCount;        
+        // Base case: prefix sum of 0 occurs once (before starting the array)
+        prefixSumCount[0] = 1;
+        int currentPrefixSum = 0;
+        int count = 0;
+        for (int num : nums) {
+            currentPrefixSum += num;
+            // If (currentPrefixSum - k) exists in hash map, add its frequency
+            if (prefixSumCount.find(currentPrefixSum - k) != prefixSumCount.end()) {
+                count += prefixSumCount[currentPrefixSum - k];
+            }
+               prefixSumCount[currentPrefixSum]++;
+        }
+        return count;
+    }  };
+
